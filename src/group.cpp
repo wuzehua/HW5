@@ -58,6 +58,15 @@ bool Group::intersect(const Ray &r, Hit &h, float tmin)
 }
 
 
+void Group::insertIntoGrid(Grid *g, Matrix *m)
+{
+    for(int i = 0;i < numOfObjects;i++)
+    {
+        objects[i]->insertIntoGrid(g,m);
+    }
+}
+
+
 bool Group::intersectShadow(const Ray &r, Hit &h, float tmin)
 {
     bool result = false;

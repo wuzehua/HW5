@@ -11,5 +11,9 @@ class Grid:public Object3D
 {
 public:
     Grid(BoundingBox *bb, int nx, int ny, int nz);
+
+private:
+    bool* show;
+    int nx,ny,nz;
 };
 #endif //HW5_GRID_H
