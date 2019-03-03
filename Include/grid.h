@@ -12,8 +12,19 @@ class Grid:public Object3D
 public:
     Grid(BoundingBox *bb, int nx, int ny, int nz);
 
+    void setGridShow(int x,int y,int z);
+    const int getnx(){return nx;}
+    const int getny(){return ny;}
+    const int getnz(){return nz;}
+    const float getdx(){return dx;}
+    const float getdy(){return dy;}
+    const float getdz(){return dz;}
+    Vec3f getCenterOfCell(int x,int y,int z);
+
+
 private:
     bool* show;
     int nx,ny,nz;
+    float dx,dy,dz;
 };
 #endif //HW5_GRID_H

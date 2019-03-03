@@ -9,6 +9,13 @@ int Sphere::theta_Step = 10;
 int Sphere::phi_Step = 10;
 bool Sphere::gouraud = false;
 
+float min3(float x, float y, float z)
+{
+    float result = x < y ? x : y;
+    result = result < z ? result : z;
+    return result;
+}
+
 
 bool Sphere::intersectGeo(const Ray &r, Hit &h, float tmin)
 {
@@ -97,6 +104,40 @@ bool Sphere::intersectShadow(const Ray &r, Hit &h, float tmin)
     return intersect(r,h,tmin);
 }
 
+
+void Sphere::insertIntoGrid(Grid *g, Matrix *m)
+{
+    Matrix matrix;
+    if(m != NULL)
+    {
+        matrix = *m;
+        matrix.Inverse();
+    }
+    else
+    {
+        matrix.SetToIdentity();
+    }
+
+    Vec3f cellCenter;
+    float dmin = min3(g->getdx(),g->getdy(),g->getdz());
+
+    for(int x = 0;x < g->getnx();x++)
+    {
+        for(int y = 0;y < g->getny();y++)
+        {
+            for(int z = 0;z < g->getnz();z++)
+            {
+                cellCenter = g->getCenterOfCell(x,y,z);
+                matrix.Transform(cellCenter);
+                if((cellCenter - center).Length() <= radius + dmin)
+                {
+                    g->setGridShow(x,y,z);
+                }
+            }
+        }
+    }
+
+}
 
 void Sphere::paint()
 {
