@@ -23,7 +23,7 @@ public:
     Object3D(){}
     virtual ~Object3D(){}
     virtual bool intersect(const Ray &r, Hit &h, float tmin) = 0;
-    virtual bool intersectShadow(const Ray& r,Hit& h,float tmin) = 0;
+    virtual bool intersectShadow(const Ray& r,Hit& h,float tmin){};
     virtual void paint(void) = 0;
     virtual void insertIntoGrid(Grid *g, Matrix *m){}
     BoundingBox* getBoundingBox() { return boundingBox;}
