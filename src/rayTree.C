@@ -1,4 +1,4 @@
-#include "rayTree.h"
+#include "../Include/rayTree.h"
 #include <GL/gl.h>
 
 // ====================================================================

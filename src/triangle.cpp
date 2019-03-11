@@ -120,3 +120,59 @@ void Triangle::paint()
     glVertex3f(c.x(),c.y(),c.z());
     glEnd();
 }
+
+
+void Triangle::insertIntoGrid(Grid *g, Matrix *m)
+{
+    Matrix matrix;
+    if(m == NULL)
+    {
+        matrix.SetToIdentity();
+    } else
+    {
+        matrix = *m;
+    }
+
+    Vec3f a1 = a;
+    Vec3f b1 = b;
+    Vec3f c1 = c;
+
+    matrix.Transform(a1);
+    matrix.Transform(b1);
+    matrix.Transform(c1);
+
+    float xmin,ymin,zmin;
+    float xmax,ymax,zmax;
+
+    xmin = min3(a1.x(),b1.x(),c1.x());
+    ymin = min3(a1.y(),b1.y(),c1.y());
+    zmin = min3(a1.z(),b1.z(),c1.z());
+
+    xmax = max3(a1.x(),b1.x(),c1.x());
+    ymax = max3(a1.y(),b1.y(),c1.y());
+    zmax = max3(a1.z(),b1.z(),c1.z());
+
+    Vec3f min = g->getBoundingBox()->getMin();
+
+    int xstart,xstop,ystart,ystop,zstart,zstop;
+
+    xstart = (int)((xmin - min.x()) / g->getdx());
+    ystart = (int)((ymin - min.y()) / g->getdy());
+    zstart = (int)((zmin - min.z()) / g->getdz());
+
+    xstop = (int)((xmax - min.x()) / g->getdx());
+    ystop = (int)((ymax - min.y()) / g->getdy());
+    zstop = (int)((zmax - min.z()) / g->getdz());
+
+
+    for(int x = xstart;x < xstop;x++)
+    {
+        for(int y = ystart;y < ystop;y++)
+        {
+            for(int z = zstart;z < zstop;z++)
+            {
+                g->setGridShow(x,y,z);
+            }
+        }
+    }
+}

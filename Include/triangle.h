@@ -6,7 +6,8 @@
 #define HW2_TRIANGLE_H
 
 #include "object3d.h"
-#include "../Include/matrix.h"
+#include "matrix.h"
+#include "grid.h"
 
 class Triangle:public Object3D
 {
@@ -21,6 +22,8 @@ public:
     bool intersect(const Ray &r, Hit &h, float tmin);
 
     bool intersectShadow(const Ray& r, Hit& h, float tmin);
+
+    void insertIntoGrid(Grid *g, Matrix *m);
 
     void paint();
 

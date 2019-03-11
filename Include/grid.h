@@ -13,6 +13,11 @@ class Grid:public Object3D
 {
 public:
     Grid(BoundingBox *bb, int nx, int ny, int nz);
+    ~Grid()
+    {
+        delete[] show;
+        delete material;
+    }
 
 
     bool intersect(const Ray &r, Hit &h, float tmin);
