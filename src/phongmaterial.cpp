@@ -88,7 +88,7 @@ Vec3f PhongMaterial::Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLig
     float d = dirToLight.Dot3(normal);
     d = d < 0 ? 0 : d;
 
-    color += d * lightColor * hit.getMaterial()->getDiffuseColor();
+    color += d * lightColor * diffuseColor;
     color += specularColor * lightColor * powf(normal.Dot3(h),exponent);
 
     return color;

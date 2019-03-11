@@ -7,6 +7,7 @@
 
 #include "object3d.h"
 #include "marchinginfo.h"
+#include "gridmaterial.h"
 
 class Grid:public Object3D
 {
@@ -19,6 +20,19 @@ public:
     void paint();
 
     void initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) const;
+
+    void setNumOfColor(int num)
+    {
+        if(num <= 0)
+        {
+            numOfColor = 1;
+        }else if(num > 6)
+        {
+            numOfColor = 6;
+        } else{
+            numOfColor = num;
+        }
+    }
 
     void setGridShow(int x,int y,int z);
     const int getnx(){return nx;}
@@ -34,5 +48,7 @@ private:
     bool* show;
     int nx,ny,nz;
     float dx,dy,dz;
+    int numOfColor;
+    GridMaterial* material;
 };
 #endif //HW5_GRID_H

@@ -121,11 +121,17 @@ void Sphere::insertIntoGrid(Grid *g, Matrix *m)
     Vec3f cellCenter;
     float dmin = min3(g->getdx(),g->getdy(),g->getdz());
 
-    for(int x = 0;x < g->getnx();x++)
+    int xmin = 0,xmax = g->getnx();
+    int ymin = 0,ymax = g->getny();
+    int zmin = 0,zmax = g->getnz();
+
+
+
+    for(int x = xmin;x < xmax;x++)
     {
-        for(int y = 0;y < g->getny();y++)
+        for(int y = ymin;y < ymax;y++)
         {
-            for(int z = 0;z < g->getnz();z++)
+            for(int z = zmin;z < zmax;z++)
             {
                 cellCenter = g->getCenterOfCell(x,y,z);
                 matrix.Transform(cellCenter);
