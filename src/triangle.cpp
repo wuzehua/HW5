@@ -3,20 +3,9 @@
 //
 
 #include "../Include/triangle.h"
+#include "../Include/usefulfuctions.h"
 
-float min3(float x1,float x2, float x3)
-{
-    float result = x1 < x2 ? x1 : x2;
-    result = result < x3 ? result : x3;
-    return result;
-}
 
-float max3(float x1,float x2,float x3)
-{
-    float result = x1 > x2 ? x1 : x2;
-    result = result > x3 ? result : x3;
-    return result;
-}
 
 Triangle::Triangle(Vec3f &a, Vec3f &b, Vec3f &c, Material *m)
 {

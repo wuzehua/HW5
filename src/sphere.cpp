@@ -3,18 +3,14 @@
 //
 
 #include "../Include/sphere.h"
+#include "../Include/usefulfuctions.h"
+
 
 
 int Sphere::theta_Step = 10;
 int Sphere::phi_Step = 10;
 bool Sphere::gouraud = false;
 
-float min3(float x, float y, float z)
-{
-    float result = x < y ? x : y;
-    result = result < z ? result : z;
-    return result;
-}
 
 
 bool Sphere::intersectGeo(const Ray &r, Hit &h, float tmin)
@@ -119,7 +115,7 @@ void Sphere::insertIntoGrid(Grid *g, Matrix *m)
     }
 
     Vec3f cellCenter;
-    float dmin = min3(g->getdx(),g->getdy(),g->getdz());
+    float dmin = Vec3f(g->getdx(),g->getdy(),g->getdz()).Length() / 2;
 
     int xmin = 0,xmax = g->getnx();
     int ymin = 0,ymax = g->getny();
@@ -135,7 +131,7 @@ void Sphere::insertIntoGrid(Grid *g, Matrix *m)
             {
                 cellCenter = g->getCenterOfCell(x,y,z);
                 matrix.Transform(cellCenter);
-                if((cellCenter - center).Length() <= radius + dmin)
+                if((cellCenter - center).Length() < radius + dmin)
                 {
                     g->setGridShow(x,y,z);
                 }

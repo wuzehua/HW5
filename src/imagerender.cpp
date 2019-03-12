@@ -22,6 +22,7 @@ ImageRender::ImageRender()
     shadeBack = false;
     gui = false;
     shadow = false;
+    showGrid = false;
 
     image = NULL;
     parser = NULL;
@@ -38,6 +39,11 @@ ImageRender::~ImageRender()
     if(parser != NULL)
     {
         delete parser;
+    }
+
+    if(grid != NULL)
+    {
+        delete grid;
     }
 }
 
@@ -99,6 +105,19 @@ void ImageRender::parseCommand(int argc, char **argv)
             i++;assert(i < argc);
             weight = atof(argv[i]);
         }
+        else if(!strcmp(argv[i],"-grid"))
+        {
+            i++;assert(i < argc);
+            nx = atoi(argv[i]);
+            i++;assert(i < argc);
+            ny = atoi(argv[i]);
+            i++;assert(i < argc);
+            nz = atoi(argv[i]);
+        }
+        else if(!strcmp(argv[i],"-visualize_grid"))
+        {
+            showGrid = true;
+        }
         else {
             printf ("whoops error with command line argument %d: '%s'\n",i,argv[i]);
             assert(0);
@@ -111,6 +130,9 @@ void ImageRender::parseCommand(int argc, char **argv)
 
     image = new Image(width,height);
     parser = new SceneParser(inputFile);
+    grid = new Grid(parser->getGroup()->getBoundingBox(),nx,ny,nz);
+    grid->setNumOfColor(parser->getGroup()->getNumOfObj());
+    parser->getGroup()->insertIntoGrid(grid,NULL);
 
 
 }
@@ -121,7 +143,14 @@ void ImageRender::renderImage()
 {
     if(outputFile != NULL)
     {
-        render();
+        if(!showGrid)
+        {
+            render();
+        }
+        else
+        {
+            renderGrid();
+        }
     }
 
     if(outputFile_depth != NULL)
@@ -274,5 +303,69 @@ void ImageRender::renderNormals()
 
     assert(outputFile_normal != NULL);
     image->SaveTGA(outputFile_normal);
+
+}
+
+void ImageRender::renderGrid()
+{
+    Vec2f point;
+    int x,y;
+    int numOfLight;
+    int i;
+    float x_float,y_float;
+    Camera* camera = parser->getCamera();
+    numOfLight = parser->getNumLights();
+    Light* lights[numOfLight];
+    Vec3f background = parser->getBackgroundColor();
+    Vec3f color;
+    Vec3f ambient;
+    Vec3f clight,L;
+    Material* material;
+    float distance;
+
+
+    ambient = parser->getAmbientLight();
+
+    for(i = 0;i < numOfLight;i++)
+    {
+        lights[i] = parser->getLight(i);
+    }
+
+
+
+    for(x = 0;x < width;x++)
+    {
+        for(y = 0;y < height;y++)
+        {
+            Hit h(FLT_MAX,NULL,Vec3f());
+            x_float = (float)x / width;
+            y_float = (float)y / height;
+            point.Set(x_float,y_float);
+            Ray ray = camera->generateRay(point);
+
+            if(grid->intersect(ray,h,camera->getTMin()))
+            {
+                material = h.getMaterial();
+                color = ambient * material->getDiffuseColor();
+
+                for(i = 0;i < numOfLight;i++)
+                {
+                    lights[i]->getIllumination(h.getIntersectionPoint(),L,clight,distance);
+                    color += material->Shade(ray,h,L,clight);
+                }
+
+                image->SetPixel(x,y,color);
+
+            }
+            else
+            {
+                image->SetPixel(x,y,background);
+            }
+
+        }
+    }
+
+    assert(outputFile != NULL);
+    image->SaveTGA(outputFile);
 
 }

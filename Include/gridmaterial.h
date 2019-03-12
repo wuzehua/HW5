@@ -17,6 +17,7 @@ public:
     Vec3f Shade(const Ray &ray, const Hit &hit, const Vec3f &dirToLight,const Vec3f &lightColor) const;
 
     void setCurrentIndex(int index){ currentIndex = index;}
+    Vec3f getDiffuseColor() const { return colors[currentIndex];}
 
 private:
     Vec3f colors[6];

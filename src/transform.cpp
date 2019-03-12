@@ -69,3 +69,8 @@ void Transform::paint()
     glPopMatrix();
 
 }
+
+void Transform::insertIntoGrid(Grid *g, Matrix *m)
+{
+    object->insertIntoGrid(g,&matrix);
+}

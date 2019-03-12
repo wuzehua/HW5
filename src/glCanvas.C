@@ -311,6 +311,11 @@ void GLCanvas::initialize(SceneParser *_scene,
   glEnable(GL_DEPTH_TEST);
   // OPTIONAL: If you'd like to set the window size from 
   // the command line, do that here
+  int parc = 0;
+  char** temp;
+  glutInit(&parc,temp);
+
+
   glutInitWindowSize(400,400);
   glutInitWindowPosition(100,100);
   glutCreateWindow("OpenGL Viewer");

@@ -24,6 +24,8 @@ public:
     bool intersect(const Ray &r, Hit &h, float tmin);
     bool intersectShadow(const Ray& r,Hit& h,float tmin);
 
+    int getNumOfObj(){ return numOfObjects;}
+
     void insertIntoGrid(Grid* g,Matrix* m);
 
     void paint();

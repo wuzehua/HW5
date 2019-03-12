@@ -3,21 +3,8 @@
 //
 
 #include "../Include/grid.h"
+#include "../Include/usefulfuctions.h"
 
-float min3(float x, float y, float z)
-{
-    float result = x < y ? x : y;
-    result = result < z ? result : z;
-    return result;
-}
-
-
-float max3(float x1,float x2,float x3)
-{
-    float result = x1 > x2 ? x1 : x2;
-    result = result > x3 ? result : x3;
-    return result;
-}
 
 
 
@@ -276,6 +263,199 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
 
 void Grid::paint()
 {
+    Vec3f center;
+    Vec3f min,max;
+    Vec3f delta(dx/2,dy/2,dz/2);
+
+    for(int x = 0;x < nx;x++)
+    {
+        for(int y = 0;y < ny;y++)
+        {
+            for (int z = 0; z < nz; z++)
+            {
+                if(!show[x * ny * nz + y * nz + z])
+                    continue;
+
+                center = getCenterOfCell(x,y,z);
+                min = center - delta;
+                max = center + delta;
+
+                material->setCurrentIndex((x + y + z) % numOfColor);
+                material->glSetMaterial();
+                glBegin(GL_QUADS);
+
+                //先对垂直于x轴上的面进行处理
+                if(x == 0)
+                {
+                    glNormal3f(-1.0f,0.0f,0.0f);
+                    glVertex3f(min.x(),min.y(),min.z());
+                    glVertex3f(min.x(),min.y(),max.z());
+                    glVertex3f(min.x(),max.y(),max.z());
+                    glVertex3f(min.x(),max.y(),min.z());
+
+                    if(x == nx - 1 || (x < nx - 1 && !show[(x + 1) * ny * nz + y * nz + z]))
+                    {
+                        glNormal3f(1.0f,0.0f,0.0f);
+                        glVertex3f(max.x(),min.y(),min.z());
+                        glVertex3f(max.x(),min.y(),max.z());
+                        glVertex3f(max.x(),max.y(),max.z());
+                        glVertex3f(max.x(),max.y(),min.z());
+                    }
+                }
+                else if(x == nx - 1)
+                {
+                    glNormal3f(1.0f,0.0f,0.0f);
+                    glVertex3f(max.x(),min.y(),min.z());
+                    glVertex3f(max.x(),min.y(),max.z());
+                    glVertex3f(max.x(),max.y(),max.z());
+                    glVertex3f(max.x(),max.y(),min.z());
+
+                    if(x > 0 && !show[(x - 1) * ny * nz + y * nz + z])
+                    {
+                        glNormal3f(-1.0f,0.0f,0.0f);
+                        glVertex3f(min.x(),min.y(),min.z());
+                        glVertex3f(min.x(),min.y(),max.z());
+                        glVertex3f(min.x(),max.y(),max.z());
+                        glVertex3f(min.x(),max.y(),min.z());
+                    }
+                }
+                else
+                {
+                    if(!show[(x - 1) * ny * nz + y * nz + z])
+                    {
+                        glNormal3f(-1.0f,0.0,0.0);
+                        glVertex3f(min.x(),min.y(),min.z());
+                        glVertex3f(min.x(),min.y(),max.z());
+                        glVertex3f(min.x(),max.y(),max.z());
+                        glVertex3f(min.x(),max.y(),min.z());
+                    }
+
+                    if(!show[(x + 1) * ny * nz + y * nz + z])
+                    {
+                        glNormal3f(1.0f,0.0f,0.0f);
+                        glVertex3f(max.x(),min.y(),min.z());
+                        glVertex3f(max.x(),min.y(),max.z());
+                        glVertex3f(max.x(),max.y(),max.z());
+                        glVertex3f(max.x(),max.y(),min.z());
+                    }
+                }
+
+                if(y == 0)
+                {
+                    glNormal3f(0.0f,-1.0f,0.0f);
+                    glVertex3f(min.x(),min.y(),min.z());
+                    glVertex3f(max.x(),min.y(),min.z());
+                    glVertex3f(max.x(),min.y(),max.z());
+                    glVertex3f(min.x(),min.y(),max.z());
+
+                    if(y == ny - 1 || (y < ny - 1 && !show[x * ny * nz + (y + 1) * nz + z]))
+                    {
+                        glNormal3f(0.0f,1.0f,0.0f);
+                        glVertex3f(min.x(),max.y(),min.z());
+                        glVertex3f(max.x(),max.y(),min.z());
+                        glVertex3f(max.x(),max.y(),max.z());
+                        glVertex3f(min.x(),max.y(),max.z());
+                    }
+
+                }
+                else if(y == ny - 1)
+                {
+                    glNormal3f(0.0f,1.0f,0.0f);
+                    glVertex3f(min.x(),max.y(),min.z());
+                    glVertex3f(max.x(),max.y(),min.z());
+                    glVertex3f(max.x(),max.y(),max.z());
+                    glVertex3f(min.x(),max.y(),max.z());
+
+                    if(y > 0 && !show[x * ny * nz + (y - 1) * nz + z])
+                    {
+                        glNormal3f(0.0f,-1.0f,0.0f);
+                        glVertex3f(min.x(),min.y(),min.z());
+                        glVertex3f(max.x(),min.y(),min.z());
+                        glVertex3f(max.x(),min.y(),max.z());
+                        glVertex3f(min.x(),min.y(),max.z());
+                    }
+                }
+                else
+                {
+                    if(!show[x * ny * nz + (y + 1) * nz + z])
+                    {
+                        glNormal3f(0.0f,1.0f,0.0f);
+                        glVertex3f(min.x(),max.y(),min.z());
+                        glVertex3f(max.x(),max.y(),min.z());
+                        glVertex3f(max.x(),max.y(),max.z());
+                        glVertex3f(min.x(),max.y(),max.z());
+                    }
+
+                    if(!show[x * ny * nz + (y - 1) * nz + z])
+                    {
+                        glNormal3f(0.0f,-1.0f,0.0f);
+                        glVertex3f(min.x(),min.y(),min.z());
+                        glVertex3f(max.x(),min.y(),min.z());
+                        glVertex3f(max.x(),min.y(),max.z());
+                        glVertex3f(min.x(),min.y(),max.z());
+                    }
+                }
+
+
+                if(z == 0)
+                {
+                    glNormal3f(0.0f,0.0f,-1.0f);
+                    glVertex3f(min.x(),min.y(),min.z());
+                    glVertex3f(max.x(),min.y(),min.z());
+                    glVertex3f(max.x(),max.y(),min.z());
+                    glVertex3f(min.x(),max.y(),min.z());
+
+                    if(z == nz - 1 || (z < nz - 1 && !show[x * ny * nz + y * nz + (z + 1)]))
+                    {
+                        glNormal3f(0.0f,0.0f,1.0f);
+                        glVertex3f(min.x(),min.y(),max.z());
+                        glVertex3f(max.x(),min.y(),max.z());
+                        glVertex3f(max.x(),max.y(),max.z());
+                        glVertex3f(min.x(),max.y(),max.z());
+                    }
+                }
+                else if(z == nz - 1)
+                {
+                    glNormal3f(0.0f,0.0f,1.0f);
+                    glVertex3f(min.x(),min.y(),max.z());
+                    glVertex3f(max.x(),min.y(),max.z());
+                    glVertex3f(max.x(),max.y(),max.z());
+                    glVertex3f(min.x(),max.y(),max.z());
+
+                    if(z > 0 && !show[x * ny * nz + y * nz + (z - 1)])
+                    {
+                        glNormal3f(0.0f,0.0f,-1.0f);
+                        glVertex3f(min.x(),min.y(),min.z());
+                        glVertex3f(max.x(),min.y(),min.z());
+                        glVertex3f(max.x(),max.y(),min.z());
+                        glVertex3f(min.x(),max.y(),min.z());
+                    }
+                }
+                else
+                {
+                    if(!show[x * ny * nz + y * nz + (z + 1)])
+                    {
+                        glNormal3f(0.0f,0.0f,1.0f);
+                        glVertex3f(min.x(),min.y(),max.z());
+                        glVertex3f(max.x(),min.y(),max.z());
+                        glVertex3f(max.x(),max.y(),max.z());
+                        glVertex3f(min.x(),max.y(),max.z());
+                    }
+
+                    if(!show[x * ny * nz + y * nz + (z - 1)])
+                    {
+                        glNormal3f(0.0f,0.0f,-1.0f);
+                        glVertex3f(min.x(),min.y(),min.z());
+                        glVertex3f(max.x(),min.y(),min.z());
+                        glVertex3f(max.x(),max.y(),min.z());
+                        glVertex3f(min.x(),max.y(),min.z());
+                    }
+                }
+
+                glEnd();
+            }
+        }
+    }
 
 }
 

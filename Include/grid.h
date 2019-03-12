@@ -47,6 +47,7 @@ public:
     const float getdy(){return dy;}
     const float getdz(){return dz;}
     Vec3f getCenterOfCell(int x,int y,int z);
+    GridMaterial* getGridMaterial() {return material;}
 
 
 private:

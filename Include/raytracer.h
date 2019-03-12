@@ -21,6 +21,7 @@ class RayTracer
 {
 public:
     RayTracer(SceneParser* s,int max_bounce, float cutoff_weight, bool shadow, bool shadeBack = false);
+    ~RayTracer(){ delete[] lights;}
     Vec3f traceRay(Ray& ray, float tmin,int bounces, float weight, float indexOfRefraction,Hit& hit) const;
     Vec3f mirrorDirection(const Vec3f& normal, const Vec3f& income) const;
     bool transmittedDirection(const Vec3f& normal, const Vec3f& incoming, float index_i, float index_t,Vec3f& transmitted) const;
