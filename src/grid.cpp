@@ -463,6 +463,6 @@ void Grid::paint()
 
 void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) const
 {
-
+    RayTree::SetMainSegment(r,tmin,100);
 
 }

@@ -128,8 +128,9 @@ void GLCanvas::display(void)
 
   if (visualize_grid) {
     if (visualize_grid_march == 0) {
-      grid->paint();
+
       grid->getBoundingBox()->paint();
+      grid->paint();
     } else if (visualize_grid_march == 1) {
       RayTree::paintHitCells();
       grid->getBoundingBox()->paint();

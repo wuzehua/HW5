@@ -8,6 +8,7 @@
 #include "object3d.h"
 #include "marchinginfo.h"
 #include "gridmaterial.h"
+#include "rayTree.h"
 
 class Grid:public Object3D
 {
