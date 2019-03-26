@@ -20,6 +20,7 @@ public:
     ~Transform()
     {
         delete object;
+        delete boundingBox;
     }
 
 

@@ -113,33 +113,22 @@ void Triangle::paint()
 
 void Triangle::insertIntoGrid(Grid *g, Matrix *m)
 {
-    Matrix matrix;
-    if(m == NULL)
-    {
-        matrix.SetToIdentity();
-    } else
-    {
-        matrix = *m;
-    }
 
-    Vec3f a1 = a;
-    Vec3f b1 = b;
-    Vec3f c1 = c;
+    BoundingBox* b = getTransformBoundingBox(m);
 
-    matrix.Transform(a1);
-    matrix.Transform(b1);
-    matrix.Transform(c1);
 
     float xmin,ymin,zmin;
     float xmax,ymax,zmax;
 
-    xmin = min3(a1.x(),b1.x(),c1.x());
-    ymin = min3(a1.y(),b1.y(),c1.y());
-    zmin = min3(a1.z(),b1.z(),c1.z());
+    xmin = b->getMin().x();
+    ymin = b->getMin().y();
+    zmin = b->getMin().z();
 
-    xmax = max3(a1.x(),b1.x(),c1.x());
-    ymax = max3(a1.y(),b1.y(),c1.y());
-    zmax = max3(a1.z(),b1.z(),c1.z());
+    xmax = b->getMax().x();
+    ymax = b->getMax().y();
+    zmax = b->getMax().z();
+
+    delete b;
 
     Vec3f min = g->getBoundingBox()->getMin();
 
@@ -164,4 +153,39 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m)
             }
         }
     }
+
+}
+
+
+BoundingBox* Triangle::getTransformBoundingBox (Matrix* m)
+{
+    if(m == NULL)
+    {
+        BoundingBox* b = new BoundingBox(*boundingBox);
+        return b;
+    }
+
+    Vec3f a1 = a;
+    Vec3f b1 = b;
+    Vec3f c1 = c;
+
+    m->Transform(a1);
+    m->Transform(b1);
+    m->Transform(c1);
+
+    float xmin,ymin,zmin;
+    float xmax,ymax,zmax;
+
+    xmin = min3(a1.x(),b1.x(),c1.x());
+    ymin = min3(a1.y(),b1.y(),c1.y());
+    zmin = min3(a1.z(),b1.z(),c1.z());
+
+    xmax = max3(a1.x(),b1.x(),c1.x());
+    ymax = max3(a1.y(),b1.y(),c1.y());
+    zmax = max3(a1.z(),b1.z(),c1.z());
+
+
+    BoundingBox* b = new BoundingBox(Vec3f(xmin,ymin,zmin),Vec3f(xmax,ymax,zmax));
+
+    return b;
 }

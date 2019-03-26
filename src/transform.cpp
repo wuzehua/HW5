@@ -13,16 +13,8 @@ Transform::Transform(Matrix matrix, Object3D *object)
     invTMatrix = invMatrix;
     invTMatrix.Transpose();
     this->object = object;
-    boundingBox = NULL;
 
-    BoundingBox* temp = object->getBoundingBox();
-
-    if(temp != NULL)
-    {
-        Vec3f min = temp->getMin();
-        Vec3f max = temp->getMax();
-        matrix.Transform(min);
-    }
+    boundingBox = object->getTransformBoundingBox(&matrix);
 
 }
 

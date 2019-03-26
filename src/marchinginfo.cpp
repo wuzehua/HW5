@@ -20,12 +20,25 @@ void MarchingInfo::setSign(const Ray &r)
     else
         signx = 1;
 
+    if(direction.y() < 0)
+        signy = -1;
+    else 
+        signy = 1;
+
+    if(direction.z() < 0)
+        signz = -1;
+    else
+        signz = 1;
+
 }
 
 
 void MarchingInfo::nextCell()
 {
-
+    if(x < nx && x >= 0 && y < ny && y >= 0 && z < nz && z >= 0)
+    {
+        
+    }
 }
 
 void MarchingInfo::setup()
