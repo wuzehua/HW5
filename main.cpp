@@ -16,6 +16,7 @@ int main(int argc,char** argv) {
 
     render.parseCommand(argc,argv);
 
+
     if(render.getGUI())
     {
         GLCanvas canvas;

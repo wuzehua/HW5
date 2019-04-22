@@ -142,12 +142,30 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m)
     ystop = (int)((ymax - min.y()) / g->getdy());
     zstop = (int)((zmax - min.z()) / g->getdz());
 
+    if(xstop >= g->getnx())
+        xstop = g->getnx() - 1;
 
-    for(int x = xstart;x < xstop;x++)
+    if(ystop >= g->getny())
+        ystop = g->getny() - 1;
+
+    if(zstop >= g->getnz())
+        zstop = g->getnz() - 1;
+
+    if(xstart > xstop)
+        xstart = xstop;
+
+    if(ystart > ystop)
+        ystart = ystop;
+
+    if(zstart > zstop)
+        zstart = zstop;
+
+
+    for(int x = xstart;x <= xstop;x++)
     {
-        for(int y = ystart;y < ystop;y++)
+        for(int y = ystart;y <= ystop;y++)
         {
-            for(int z = zstart;z < zstop;z++)
+            for(int z = zstart;z <= zstop;z++)
             {
                 g->setGridShow(x,y,z);
             }
