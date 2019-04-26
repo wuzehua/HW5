@@ -43,7 +43,9 @@ void traceRay(float x, float y)
 
     if(render.getGridVisual())
     {
-
+        Grid* grid = render.getGrid();
+        MarchingInfo marchingInfo;
+        grid->initializeRayMarch(marchingInfo,ray,camera->getTMin());
     }
     else
     {

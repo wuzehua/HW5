@@ -169,7 +169,7 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
     }
     else if(tnear == t1y)
     {
-        normalDirection = (-signy) << 1;
+        normalDirection = (-signy) * 2;
         tnexty = tnear;
         getTs(t1x,t2x,t1y,t2y,t1z,t2z,origin,direction,min,max);
         tnextx = t2x;
@@ -177,7 +177,7 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
     }
     else
     {
-        normalDirection = (-signz) << 2;
+        normalDirection = (-signz) * 4;
         tnextz = tnear;
         getTs(t1x,t2x,t1y,t2y,t1z,t2z,origin,direction,min,max);
         tnexty = t2y;

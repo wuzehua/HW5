@@ -32,9 +32,9 @@ public:
 
 private:
     int nx,ny,nz;
-    int signx,signy,signz;
+    int sign[3];
     int x,y,z;
-    float dx,dy,dz;
+    float delta[3];
     float tmin;
     float tnear;
     bool isInBox;

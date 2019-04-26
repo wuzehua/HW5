@@ -16,19 +16,19 @@ void MarchingInfo::setSign(const Ray &r)
     Vec3f direction = r.getDirection();
 
     if(direction.x() < 0)
-        signx = -1;
+        sign[0] = -1;
     else
-        signx = 1;
+        sign[0] = 1;
 
     if(direction.y() < 0)
-        signy = -1;
+        sign[1] = -1;
     else 
-        signy = 1;
+        sign[1] = 1;
 
     if(direction.z() < 0)
-        signz = -1;
+        sign[2] = -1;
     else
-        signz = 1;
+        sign[2] = 1;
 
 }
 

@@ -28,6 +28,8 @@ public:
 
     void insertIntoGrid(Grid* g,Matrix* m);
 
+    //BoundingBox* getTransformBoundingBox (Matrix* m);
+
     void paint();
 
 

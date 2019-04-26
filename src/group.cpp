@@ -60,6 +60,28 @@ bool Group::intersect(const Ray &r, Hit &h, float tmin)
 
 void Group::insertIntoGrid(Grid *g, Matrix *m)
 {
+    if(boundingBox == NULL)
+    {
+        if(numOfObjects == 0)
+        {
+            boundingBox = new BoundingBox(Vec3f(),Vec3f());
+        } else
+        {
+            BoundingBox* temp;
+            for(int i = 0;i < numOfObjects;i++)
+            {
+                temp = objects[i]->getBoundingBox();
+                if(i == 0)
+                {
+                    boundingBox = new BoundingBox(temp->getMin(),temp->getMax());
+                } else
+                {
+                    boundingBox->Extend(temp);
+                }
+            }
+        }
+
+    }
     for(int i = 0;i < numOfObjects;i++)
     {
         objects[i]->insertIntoGrid(g,m);
@@ -88,3 +110,25 @@ void Group::paint()
         objects[i]->paint();
     }
 }
+
+/*
+BoundingBox* Group::getTransformBoundingBox(Matrix *m)
+{
+    BoundingBox* b = NULL;
+    BoundingBox* temp;
+    for(int i = 0;i < numOfObjects;i++)
+    {
+        temp = objects[i]->getTransformBoundingBox(m);
+        if(b == NULL)
+        {
+            b = temp;
+        } else
+        {
+            b->Extend(temp);
+            delete temp;
+        }
+    }
+
+    return b;
+}
+ */

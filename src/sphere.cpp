@@ -117,17 +117,58 @@ void Sphere::insertIntoGrid(Grid *g, Matrix *m)
     Vec3f cellCenter;
     float dmin = Vec3f(g->getdx(),g->getdy(),g->getdz()).Length() / 2;
 
-    int xmin = 0,xmax = g->getnx();
-    int ymin = 0,ymax = g->getny();
-    int zmin = 0,zmax = g->getnz();
+    BoundingBox* b = getTransformBoundingBox(m);
+
+    float xmin,ymin,zmin;
+    float xmax,ymax,zmax;
+
+    xmin = b->getMin().x();
+    ymin = b->getMin().y();
+    zmin = b->getMin().z();
+
+    xmax = b->getMax().x();
+    ymax = b->getMax().y();
+    zmax = b->getMax().z();
+
+    delete b;
+
+    Vec3f min = g->getBoundingBox()->getMin();
+
+    int xstart,xstop,ystart,ystop,zstart,zstop;
+
+    xstart = (int)((xmin - min.x()) / g->getdx());
+    ystart = (int)((ymin - min.y()) / g->getdy());
+    zstart = (int)((zmin - min.z()) / g->getdz());
+
+    xstop = (int)((xmax - min.x()) / g->getdx());
+    ystop = (int)((ymax - min.y()) / g->getdy());
+    zstop = (int)((zmax - min.z()) / g->getdz());
+
+    if(xstop >= g->getnx())
+        xstop = g->getnx() - 1;
+
+    if(ystop >= g->getny())
+        ystop = g->getny() - 1;
+
+    if(zstop >= g->getnz())
+        zstop = g->getnz() - 1;
+
+    if(xstart > xstop)
+        xstart = xstop;
+
+    if(ystart > ystop)
+        ystart = ystop;
+
+    if(zstart > zstop)
+        zstart = zstop;
 
 
 
-    for(int x = xmin;x < xmax;x++)
+    for(int x = xstart;x <= xstop;x++)
     {
-        for(int y = ymin;y < ymax;y++)
+        for(int y = ystart;y <= ystop;y++)
         {
-            for(int z = zmin;z < zmax;z++)
+            for(int z = zstart;z <= zstop;z++)
             {
                 cellCenter = g->getCenterOfCell(x,y,z);
                 matrix.Transform(cellCenter);

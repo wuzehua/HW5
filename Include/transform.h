@@ -19,8 +19,10 @@ public:
 
     ~Transform()
     {
-        delete object;
-        delete boundingBox;
+        if(object != NULL)
+            delete object;
+        if(boundingBox != NULL)
+            delete boundingBox;
     }
 
 
