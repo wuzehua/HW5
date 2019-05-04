@@ -28,6 +28,110 @@ void getTs(float& t1x, float& t2x, float& t1y, float& t2y, float& t1z, float& t2
 
     if(t1z > t2z)
         swap(t1z,t2z);
+
+    if(direction.x() == 0.f)
+    {
+        t1x = -FLT_MAX;
+        t2x = FLT_MAX;
+    }
+
+    if(direction.y() == 0.f)
+    {
+        t1y = -FLT_MAX;
+        t2y = FLT_MAX;
+    }
+
+    if(direction.z() == 0.f)
+    {
+        t1z = -FLT_MAX;
+        t2z = FLT_MAX;
+    }
+
+}
+
+
+void getNormal(int normalDir, Vec3f& normal)
+{
+    switch (normalDir) {
+        case 1:
+            normal.Set(-1, 0, 0);
+            break;
+        case -1:
+            normal.Set(1, 0, 0);
+            break;
+        case 2:
+            normal.Set(0,-1,0);
+            break;
+        case -2:
+            normal.Set(0,1,0);
+            break;
+        case 4:
+            normal.Set(0,0,-1);
+            break;
+        case -4:
+            normal.Set(0,0,1);
+            break;
+    }
+}
+
+
+void Grid::addEnterFace(int normalDirection,Vec3f center)
+{
+    if(normalDirection == -1)//Vec朝x轴正方向
+    {
+        RayTree::AddEnteredFace(center + Vec3f(dx / 2,-dy / 2,-dz / 2),
+                                center + Vec3f(dx / 2,-dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,-dz / 2),
+                                Vec3f(1,0,0),
+                                material);
+    }
+    else if(normalDirection == 1)
+    {
+        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,-dz / 2),
+                                center + Vec3f(-dx / 2,-dy / 2,dz / 2),
+                                center + Vec3f(-dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(-dx / 2,dy / 2,-dz / 2),
+                                Vec3f(-1,0,0),
+                                material);
+    }
+    else if(normalDirection == -2)
+    {
+        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,dy / 2,-dz / 2),
+                                center + Vec3f(-dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,-dz / 2),
+                                Vec3f(0,1,0),
+                                material);
+    }
+    else if(normalDirection == 2)
+    {
+        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,-dz / 2),
+                                center + Vec3f(-dx / 2,-dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,-dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,-dy / 2,-dz / 2),
+                                Vec3f(0,-1,0),
+                                material);
+    }
+    else if(normalDirection == -4)
+    {
+        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,dz / 2),
+                                center + Vec3f(-dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,-dy / 2,dz / 2),
+                                Vec3f(0,0,1),
+                                material);
+    }
+    else
+    {
+        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,-dz / 2),
+                                center + Vec3f(-dx / 2,dy / 2,-dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,-dz / 2),
+                                center + Vec3f(dx / 2,-dy / 2,-dz / 2),
+                                Vec3f(0,0,-1),
+                                material);
+    }
+
 }
 
 
@@ -89,6 +193,8 @@ Vec3f Grid::getCenterOfCell(int x, int y, int z)
 
 bool Grid::intersect(const Ray &r, Hit &h, float tmin)
 {
+
+    RayTree::SetMainSegment(r,tmin,FLT_MAX);
     Vec3f origin = r.getOrigin();
     Vec3f direction = r.getDirection();
     Vec3f min = boundingBox->getMin();
@@ -97,13 +203,15 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
 
     direction.Normalize();
 
-    if((origin.x() < min.x() || origin.x() > max.x()) && direction.x() == 0)
+    //std::cout<<"Direction:"<<direction.x()<<","<<direction.y()<<","<<direction.z()<<std::endl;
+
+    if((origin.x() < min.x() || origin.x() > max.x()) && direction.x() == 0.f)
         return false;
 
-    if((origin.y() < min.y() || origin.y() > max.y()) && direction.y() == 0)
+    if((origin.y() < min.y() || origin.y() > max.y()) && direction.y() == 0.f)
         return false;
 
-    if((origin.z() < min.z() || origin.z() > max.z()) && direction.z() == 0)
+    if((origin.z() < min.z() || origin.z() > max.z()) && direction.z() == 0.f)
         return false;
 
 
@@ -147,9 +255,7 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
         signz = -1;
 
 
-    float dtx = dx / direction.x();
-    float dty = dy / direction.y();
-    float dtz = dz / direction.z();
+
 
     bool hit = false;
 
@@ -185,45 +291,50 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
     }
 
 
+    float dtx = fabsf(dx / direction.x());
+    float dty = fabsf(dy / direction.y());
+    float dtz = fabsf(dz / direction.z());
+    Vec3f center;
 
+    while (x < nx && y < ny && z < nz && x >= 0 && y >= 0 && z >= 0) {
 
-    while (x < nx && y < ny && z < nz && x >= 0 && y >= 0 && z >= 0)
-    {
-        if(show[x * ny * nz + y * nz + z] )
-        {
-            if(tmin < tnear) {
+        //std::cout<<"Grid("<<x<<","<<y<<","<<z<<") ";
+        //std::cout<<"tnextx:"<<tnextx;
+        //std::cout<<"tnexty:"<<tnexty;
+        //std::cout<<"tnextz:"<<tnextz<<std::endl;
+        center = getCenterOfCell(x,y,z);
+        addEnterFace(normalDirection,center);
+
+        if (show[x * ny * nz + y * nz + z]) {
+            if (tmin < tnear) {
                 hit = true;
                 break;
-            } else{
-                if(origin == startPoint)
-                {
-                    tnear = min3(t2x,t2y,t2z);
+            } else {
+                if (origin == startPoint) {
+                    tnear = min3(t2x, t2y, t2z);
                     hit = true;
                     break;
                 }
             }
         }
 
-        if(tnextx < tnexty && tnextx < tnextz)
-        {
+        if (tnextx < tnexty && tnextx < tnextz) {
             normalDirection = (-signx);
             x += signx;
             tnextx += dtx;
             tnear = tnextx;
-        }
-        else if(tnexty < tnextx && tnexty < tnextz)
-        {
-            normalDirection = (-signy) << 1;
-            y += signy;
-            tnexty += dty;
-            tnear = tnexty;
-        }
-        else
-        {
-            normalDirection = (-signz) << 2;
-            z += signz;
-            tnextz += dtz;
-            tnear = tnextz;
+        } else {
+            if (tnexty < tnextz) {
+                normalDirection = (-signy) * 2;
+                y += signy;
+                tnexty += dty;
+                tnear = tnexty;
+            } else {
+                normalDirection = (-signz) * 4;
+                z += signz;
+                tnextz += dtz;
+                tnear = tnextz;
+            }
         }
     }
 

@@ -5,6 +5,8 @@
 #ifndef HW5_GRID_H
 #define HW5_GRID_H
 
+
+#include <cfloat>
 #include "object3d.h"
 #include "marchinginfo.h"
 #include "gridmaterial.h"
@@ -57,5 +59,7 @@ private:
     float dx,dy,dz;
     int numOfColor;
     GridMaterial* material;
+
+    void addEnterFace(int normalDirection,Vec3f center);
 };
 #endif //HW5_GRID_H

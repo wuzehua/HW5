@@ -40,16 +40,15 @@ void traceRay(float x, float y)
 {
     Camera* camera = render.getScen()->getCamera();
     Ray ray = camera->generateRay(Vec2f(x,y));
+    Hit hit(FLT_MAX,NULL,Vec3f());
 
     if(render.getGridVisual())
     {
         Grid* grid = render.getGrid();
-        MarchingInfo marchingInfo;
-        grid->initializeRayMarch(marchingInfo,ray,camera->getTMin());
+        grid->intersect(ray,hit,camera->getTMin());
     }
     else
     {
-        Hit hit(FLT_MAX,NULL,Vec3f());
         int bounces = render.getBounces();
         bool shadeBack = render.getShadeBack();
         bool shadow = render.getShadow();

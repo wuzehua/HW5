@@ -128,9 +128,9 @@ void GLCanvas::display(void)
 
   if (visualize_grid) {
     if (visualize_grid_march == 0) {
-
-      grid->getBoundingBox()->paint();
       grid->paint();
+      grid->getBoundingBox()->paint();
+
     } else if (visualize_grid_march == 1) {
       RayTree::paintHitCells();
       grid->getBoundingBox()->paint();
@@ -210,6 +210,7 @@ void GLCanvas::mouse(int button, int state, int x, int y) {
   mouseButton = button;
   mouseX = x;
   mouseY = y;
+  //printf("x = %d y = %d\n",x,y);
 }
 
 // ========================================================
