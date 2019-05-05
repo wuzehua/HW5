@@ -174,7 +174,7 @@ void Sphere::insertIntoGrid(Grid *g, Matrix *m)
                 matrix.Transform(cellCenter);
                 if((cellCenter - center).Length() < radius + dmin)
                 {
-                    g->setGridShow(x,y,z);
+                    g->setGridShow(x,y,z,this);
                 }
             }
         }

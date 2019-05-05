@@ -11,6 +11,7 @@ Plane::Plane(Vec3f &normal, float offset, Material *material)
     this->offset = offset;
     this->material = material;
     boundingBox = NULL;
+    type = PlaneType;
 }
 
 
@@ -28,6 +29,7 @@ Plane::Plane(Vec3f &a, Vec3f &b, Vec3f &c, Material *material)
     }
 
     this->material = material;
+    type = PlaneType;
 }
 
 

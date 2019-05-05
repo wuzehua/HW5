@@ -7,7 +7,6 @@
 
 
 
-
 void getTs(float& t1x, float& t2x, float& t1y, float& t2y, float& t1z, float& t2z
         , const Vec3f& origin, const Vec3f& direction, const Vec3f& min,const Vec3f& max)
 {
@@ -50,84 +49,59 @@ void getTs(float& t1x, float& t2x, float& t1y, float& t2y, float& t1z, float& t2
 }
 
 
-void getNormal(int normalDir, Vec3f& normal)
-{
-    switch (normalDir) {
-        case 1:
-            normal.Set(-1, 0, 0);
-            break;
-        case -1:
-            normal.Set(1, 0, 0);
-            break;
-        case 2:
-            normal.Set(0,-1,0);
-            break;
-        case -2:
-            normal.Set(0,1,0);
-            break;
-        case 4:
-            normal.Set(0,0,-1);
-            break;
-        case -4:
-            normal.Set(0,0,1);
-            break;
-    }
-}
-
-
 void Grid::addEnterFace(int normalDirection,Vec3f center)
 {
     if(normalDirection == -1)//Vec朝x轴正方向
     {
-        RayTree::AddEnteredFace(center + Vec3f(dx / 2,-dy / 2,-dz / 2),
-                                center + Vec3f(dx / 2,-dy / 2,dz / 2),
-                                center + Vec3f(dx / 2,dy / 2,dz / 2),
-                                center + Vec3f(dx / 2,dy / 2,-dz / 2),
+        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,-dz / 2),
+                                center + Vec3f(-dx / 2,-dy / 2,dz / 2),
+                                center + Vec3f(-dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(-dx / 2,dy / 2,-dz / 2),
                                 Vec3f(1,0,0),
                                 material);
     }
     else if(normalDirection == 1)
     {
-        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,-dz / 2),
-                                center + Vec3f(-dx / 2,-dy / 2,dz / 2),
-                                center + Vec3f(-dx / 2,dy / 2,dz / 2),
-                                center + Vec3f(-dx / 2,dy / 2,-dz / 2),
+        RayTree::AddEnteredFace(center + Vec3f(dx / 2,-dy / 2,-dz / 2),
+                                center + Vec3f(dx / 2,-dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,-dz / 2),
                                 Vec3f(-1,0,0),
                                 material);
     }
     else if(normalDirection == -2)
     {
-        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,dy / 2,-dz / 2),
-                                center + Vec3f(-dx / 2,dy / 2,dz / 2),
-                                center + Vec3f(dx / 2,dy / 2,dz / 2),
-                                center + Vec3f(dx / 2,dy / 2,-dz / 2),
+        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,-dz / 2),
+                                center + Vec3f(-dx / 2,-dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,-dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,-dy / 2,-dz / 2),
                                 Vec3f(0,1,0),
                                 material);
     }
     else if(normalDirection == 2)
     {
-        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,-dz / 2),
-                                center + Vec3f(-dx / 2,-dy / 2,dz / 2),
-                                center + Vec3f(dx / 2,-dy / 2,dz / 2),
-                                center + Vec3f(dx / 2,-dy / 2,-dz / 2),
+        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,dy / 2,-dz / 2),
+                                center + Vec3f(-dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,-dz / 2),
                                 Vec3f(0,-1,0),
                                 material);
     }
     else if(normalDirection == -4)
     {
-        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,dz / 2),
-                                center + Vec3f(-dx / 2,dy / 2,dz / 2),
-                                center + Vec3f(dx / 2,dy / 2,dz / 2),
-                                center + Vec3f(dx / 2,-dy / 2,dz / 2),
+        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,-dz / 2),
+                                center + Vec3f(-dx / 2,dy / 2,-dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,-dz / 2),
+                                center + Vec3f(dx / 2,-dy / 2,-dz / 2),
                                 Vec3f(0,0,1),
                                 material);
     }
     else
     {
-        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,-dz / 2),
-                                center + Vec3f(-dx / 2,dy / 2,-dz / 2),
-                                center + Vec3f(dx / 2,dy / 2,-dz / 2),
-                                center + Vec3f(dx / 2,-dy / 2,-dz / 2),
+        RayTree::AddEnteredFace(center + Vec3f(-dx / 2,-dy / 2,dz / 2),
+                                center + Vec3f(-dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,dy / 2,dz / 2),
+                                center + Vec3f(dx / 2,-dy / 2,dz / 2),
                                 Vec3f(0,0,-1),
                                 material);
     }
@@ -137,7 +111,7 @@ void Grid::addEnterFace(int normalDirection,Vec3f center)
 
 Grid::Grid(BoundingBox *bb, int nx, int ny, int nz)
 {
-    show = new bool [nx * ny * nz];
+    cells = new Object3D* [nx * ny * nz];
     this->nx = nx;
     this->ny = ny;
     this->nz = nz;
@@ -146,6 +120,8 @@ Grid::Grid(BoundingBox *bb, int nx, int ny, int nz)
     numOfColor = 1;
 
     material = new GridMaterial();
+
+    type = GridType;
 
     float x = bb->getMax().x() - bb->getMin().x();
     float y = bb->getMax().y() - bb->getMin().y();
@@ -162,7 +138,7 @@ Grid::Grid(BoundingBox *bb, int nx, int ny, int nz)
         {
             for(int k = 0;k < nz;k++)
             {
-                show[i * ny * nz + j * nz + k] = false;
+                cells[i * ny * nz + j * nz + k] = nullptr;
             }
         }
     }
@@ -170,9 +146,9 @@ Grid::Grid(BoundingBox *bb, int nx, int ny, int nz)
 }
 
 
-void Grid::setGridShow(int x, int y, int z)
+void Grid::setGridShow(int x, int y, int z,Object3D* object)
 {
-    show[x * ny * nz + y * nz + z] = true;
+    cells[x * ny * nz + y * nz + z] = object;
 }
 
 
@@ -233,9 +209,20 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
     else
         startPoint = origin;
 
+    //std::cout<<"Origin("<<origin.x()<<","<<origin.y()<<","<<origin.z()<<")"<<std::endl;
+    //std::cout<<"Direction("<<direction.x()<<","<<direction.y()<<","<<direction.z()<<")"<<std::endl;
+    //std::cout<<"Min("<<min.x()<<","<<min.y()<<","<<min.z()<<")"<<std::endl;
+    //std::cout<<"Max("<<max.x()<<","<<max.y()<<","<<max.z()<<")"<<std::endl;
+    //std::cout<<"tnear="<<tnear<<" tfar="<<tfar<<std::endl;
+    //std::cout<<"t1x="<<t1x<<" t1y="<<t1y<<" t1z="<<t1z<<std::endl;
+    //std::cout<<"t2x="<<t2x<<" t2y="<<t2y<<" t2z="<<t2z<<std::endl;
+    //std::cout<<"Start Point("<<startPoint.x()<<","<<startPoint.y()<<","<<startPoint.z()<<")"<<std::endl<<std::endl;
+
     int x = (int)((startPoint - min).x() / dx);
     int y = (int)((startPoint - min).y() / dy);
     int z = (int)((startPoint - min).z() / dz);
+
+    //std::cout<<"x="<<x<<" y="<<y<<" z="<<z<<std::endl;
 
     int signx,signy,signz;
 
@@ -254,7 +241,12 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
     else
         signz = -1;
 
-
+    if(x == nx)
+        x = nx - 1;
+    if(y == ny)
+        y = ny - 1;
+    if(z == nz)
+        z = nz - 1;
 
 
     bool hit = false;
@@ -268,26 +260,29 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
     if(tnear == t1x)
     {
         normalDirection = (-signx);
-        tnextx = tnear;
+        //tnextx = tnear;
         getTs(t1x,t2x,t1y,t2y,t1z,t2z,origin,direction,min,max);
         tnexty = t2y;
         tnextz = t2z;
+        tnextx = t2x;
     }
     else if(tnear == t1y)
     {
         normalDirection = (-signy) * 2;
-        tnexty = tnear;
+        //tnexty = tnear;
         getTs(t1x,t2x,t1y,t2y,t1z,t2z,origin,direction,min,max);
         tnextx = t2x;
+        tnexty = t2y;
         tnextz = t2z;
     }
     else
     {
         normalDirection = (-signz) * 4;
-        tnextz = tnear;
+        //tnextz = tnear;
         getTs(t1x,t2x,t1y,t2y,t1z,t2z,origin,direction,min,max);
         tnexty = t2y;
         tnextx = t2x;
+        tnextz = t2z;
     }
 
 
@@ -296,16 +291,22 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
     float dtz = fabsf(dz / direction.z());
     Vec3f center;
 
+
+    //std::cout<<"Min("<<min.x()<<","<<min.y()<<","<<min.z()<<")"<<std::endl;
+    //std::cout<<"Max("<<max.x()<<","<<max.y()<<","<<max.z()<<")"<<std::endl;
+    //std::cout<<"t1x="<<t1x<<" t1y="<<t1y<<" t1z="<<t1z<<std::endl;
+    //std::cout<<"t2x="<<t2x<<" t2y="<<t2y<<" t2z="<<t2z<<std::endl;
+
     while (x < nx && y < ny && z < nz && x >= 0 && y >= 0 && z >= 0) {
 
         //std::cout<<"Grid("<<x<<","<<y<<","<<z<<") ";
         //std::cout<<"tnextx:"<<tnextx;
-        //std::cout<<"tnexty:"<<tnexty;
-        //std::cout<<"tnextz:"<<tnextz<<std::endl;
+        //std::cout<<" tnexty:"<<tnexty;
+        //std::cout<<" tnextz:"<<tnextz<<std::endl;
         center = getCenterOfCell(x,y,z);
         addEnterFace(normalDirection,center);
 
-        if (show[x * ny * nz + y * nz + z]) {
+        if (cells[x * ny * nz + y * nz + z] != nullptr) {
             if (tmin < tnear) {
                 hit = true;
                 break;
@@ -321,19 +322,19 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin)
         if (tnextx < tnexty && tnextx < tnextz) {
             normalDirection = (-signx);
             x += signx;
-            tnextx += dtx;
             tnear = tnextx;
+            tnextx += dtx;
         } else {
             if (tnexty < tnextz) {
                 normalDirection = (-signy) * 2;
                 y += signy;
-                tnexty += dty;
                 tnear = tnexty;
+                tnexty += dty;
             } else {
                 normalDirection = (-signz) * 4;
                 z += signz;
-                tnextz += dtz;
                 tnear = tnextz;
+                tnextz += dtz;
             }
         }
     }
@@ -384,7 +385,7 @@ void Grid::paint()
         {
             for (int z = 0; z < nz; z++)
             {
-                if(!show[x * ny * nz + y * nz + z])
+                if(cells[x * ny * nz + y * nz + z] == nullptr)
                     continue;
 
                 center = getCenterOfCell(x,y,z);
@@ -404,7 +405,7 @@ void Grid::paint()
                     glVertex3f(min.x(),max.y(),max.z());
                     glVertex3f(min.x(),max.y(),min.z());
 
-                    if(x == nx - 1 || (x < nx - 1 && !show[(x + 1) * ny * nz + y * nz + z]))
+                    if(x == nx - 1 || (x < nx - 1 && cells[(x + 1) * ny * nz + y * nz + z] == nullptr))
                     {
                         glNormal3f(1.0f,0.0f,0.0f);
                         glVertex3f(max.x(),min.y(),min.z());
@@ -421,7 +422,7 @@ void Grid::paint()
                     glVertex3f(max.x(),max.y(),max.z());
                     glVertex3f(max.x(),max.y(),min.z());
 
-                    if(x > 0 && !show[(x - 1) * ny * nz + y * nz + z])
+                    if(x > 0 && cells[(x - 1) * ny * nz + y * nz + z] == nullptr)
                     {
                         glNormal3f(-1.0f,0.0f,0.0f);
                         glVertex3f(min.x(),min.y(),min.z());
@@ -432,7 +433,7 @@ void Grid::paint()
                 }
                 else
                 {
-                    if(!show[(x - 1) * ny * nz + y * nz + z])
+                    if(cells[(x - 1) * ny * nz + y * nz + z] == nullptr)
                     {
                         glNormal3f(-1.0f,0.0,0.0);
                         glVertex3f(min.x(),min.y(),min.z());
@@ -441,7 +442,7 @@ void Grid::paint()
                         glVertex3f(min.x(),max.y(),min.z());
                     }
 
-                    if(!show[(x + 1) * ny * nz + y * nz + z])
+                    if(cells[(x + 1) * ny * nz + y * nz + z] == nullptr)
                     {
                         glNormal3f(1.0f,0.0f,0.0f);
                         glVertex3f(max.x(),min.y(),min.z());
@@ -459,7 +460,7 @@ void Grid::paint()
                     glVertex3f(max.x(),min.y(),max.z());
                     glVertex3f(min.x(),min.y(),max.z());
 
-                    if(y == ny - 1 || (y < ny - 1 && !show[x * ny * nz + (y + 1) * nz + z]))
+                    if(y == ny - 1 || (y < ny - 1 && cells[x * ny * nz + (y + 1) * nz + z] == nullptr))
                     {
                         glNormal3f(0.0f,1.0f,0.0f);
                         glVertex3f(min.x(),max.y(),min.z());
@@ -477,7 +478,7 @@ void Grid::paint()
                     glVertex3f(max.x(),max.y(),max.z());
                     glVertex3f(min.x(),max.y(),max.z());
 
-                    if(y > 0 && !show[x * ny * nz + (y - 1) * nz + z])
+                    if(y > 0 && cells[x * ny * nz + (y - 1) * nz + z] == nullptr)
                     {
                         glNormal3f(0.0f,-1.0f,0.0f);
                         glVertex3f(min.x(),min.y(),min.z());
@@ -488,7 +489,7 @@ void Grid::paint()
                 }
                 else
                 {
-                    if(!show[x * ny * nz + (y + 1) * nz + z])
+                    if(cells[x * ny * nz + (y + 1) * nz + z] == nullptr)
                     {
                         glNormal3f(0.0f,1.0f,0.0f);
                         glVertex3f(min.x(),max.y(),min.z());
@@ -497,7 +498,7 @@ void Grid::paint()
                         glVertex3f(min.x(),max.y(),max.z());
                     }
 
-                    if(!show[x * ny * nz + (y - 1) * nz + z])
+                    if(cells[x * ny * nz + (y - 1) * nz + z] == nullptr)
                     {
                         glNormal3f(0.0f,-1.0f,0.0f);
                         glVertex3f(min.x(),min.y(),min.z());
@@ -516,7 +517,7 @@ void Grid::paint()
                     glVertex3f(max.x(),max.y(),min.z());
                     glVertex3f(min.x(),max.y(),min.z());
 
-                    if(z == nz - 1 || (z < nz - 1 && !show[x * ny * nz + y * nz + (z + 1)]))
+                    if(z == nz - 1 || (z < nz - 1 && cells[x * ny * nz + y * nz + (z + 1)] == nullptr))
                     {
                         glNormal3f(0.0f,0.0f,1.0f);
                         glVertex3f(min.x(),min.y(),max.z());
@@ -533,7 +534,7 @@ void Grid::paint()
                     glVertex3f(max.x(),max.y(),max.z());
                     glVertex3f(min.x(),max.y(),max.z());
 
-                    if(z > 0 && !show[x * ny * nz + y * nz + (z - 1)])
+                    if(z > 0 && cells[x * ny * nz + y * nz + (z - 1)] == nullptr)
                     {
                         glNormal3f(0.0f,0.0f,-1.0f);
                         glVertex3f(min.x(),min.y(),min.z());
@@ -544,7 +545,7 @@ void Grid::paint()
                 }
                 else
                 {
-                    if(!show[x * ny * nz + y * nz + (z + 1)])
+                    if(cells[x * ny * nz + y * nz + (z + 1)] == nullptr)
                     {
                         glNormal3f(0.0f,0.0f,1.0f);
                         glVertex3f(min.x(),min.y(),max.z());
@@ -553,7 +554,7 @@ void Grid::paint()
                         glVertex3f(min.x(),max.y(),max.z());
                     }
 
-                    if(!show[x * ny * nz + y * nz + (z - 1)])
+                    if(cells[x * ny * nz + y * nz + (z - 1)] == nullptr)
                     {
                         glNormal3f(0.0f,0.0f,-1.0f);
                         glVertex3f(min.x(),min.y(),min.z());
@@ -572,8 +573,3 @@ void Grid::paint()
 
 
 
-void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) const
-{
-    RayTree::SetMainSegment(r,tmin,100);
-
-}

@@ -18,7 +18,7 @@ public:
     Grid(BoundingBox *bb, int nx, int ny, int nz);
     ~Grid()
     {
-        delete[] show;
+        delete[] cells;
         delete material;
     }
 
@@ -42,7 +42,7 @@ public:
         }
     }
 
-    void setGridShow(int x,int y,int z);
+    void setGridShow(int x,int y,int z,Object3D* object);
     const int getnx(){return nx;}
     const int getny(){return ny;}
     const int getnz(){return nz;}
@@ -54,7 +54,7 @@ public:
 
 
 private:
-    bool* show;
+    Object3D** cells;
     int nx,ny,nz;
     float dx,dy,dz;
     int numOfColor;

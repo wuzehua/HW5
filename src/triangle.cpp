@@ -37,6 +37,7 @@ Triangle::Triangle(Vec3f &a, Vec3f &b, Vec3f &c, Material *m)
     Vec3f max(xmax,ymax,zmax);
 
     boundingBox = new BoundingBox(min,max);
+    type = TriangleType;
 }
 
 
@@ -167,7 +168,7 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m)
         {
             for(int z = zstart;z <= zstop;z++)
             {
-                g->setGridShow(x,y,z);
+                g->setGridShow(x,y,z,this);
             }
         }
     }

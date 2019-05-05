@@ -8,14 +8,15 @@ PerspectiveCamera::PerspectiveCamera(Vec3f &center, Vec3f &direction, Vec3f &up,
 {
     this->center = center;
     this->direction = direction;
-    this->up = up;
-    Vec3f::Cross3(horizion,direction,up);
+    this->rawUp = up;
+    this->rawUp.Normalize();
+    Vec3f::Cross3(horizion,direction,this->rawUp);
     Vec3f::Cross3(this->up,horizion,direction);
     this->up.Normalize();
     horizion.Normalize();
     this->direction.Normalize();
     this->angle_radius = angle_radius;
-    size = 2 * tan(angle_radius / 2); //在距离center为1个单位长度的位置虚拟屏幕的size
+    size = 2 * tanf(angle_radius / 2); //在距离center为1个单位长度的位置虚拟屏幕的size
 
 }
 
@@ -76,16 +77,16 @@ void PerspectiveCamera::rotateCamera(float rx, float ry)
     // Don't let the model flip upside-down (There is a singularity
     // at the poles when 'up' and 'direction' are aligned)
 
-    float tiltAngle = acos(up.Dot3(direction));
+    float tiltAngle = acos(rawUp.Dot3(direction));
     if (tiltAngle - ry > 3.13) ry = tiltAngle - 3.13;
     else if (tiltAngle - ry < 0.01) ry = tiltAngle - 0.01;
-    Matrix rotMat = Matrix::MakeAxisRotation(up, rx);
+    Matrix rotMat = Matrix::MakeAxisRotation(rawUp, rx);
     rotMat *= Matrix::MakeAxisRotation(horizion, ry);
     rotMat.Transform(center);
     rotMat.TransformDirection(direction);
     direction.Normalize();
 
-    Vec3f::Cross3(horizion,direction,up);
+    Vec3f::Cross3(horizion,direction,rawUp);
     Vec3f::Cross3(up,horizion,direction);
     horizion.Normalize();
     up.Normalize();

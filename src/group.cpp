@@ -9,6 +9,7 @@ Group::Group(int numOfObjects)
     this->numOfObjects = numOfObjects;
     objects = new Object3DPtr[numOfObjects];
     boundingBox = NULL;
+    type = GroupType;
 }
 
 Group::~Group()

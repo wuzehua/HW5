@@ -15,6 +15,9 @@
 #include "boundingbox.h"
 #include "material.h"
 
+
+enum Type{GroupType,SphereType,TriangleType,GridType,TransformType,PlaneType};
+
 class Grid;
 
 class Object3D
@@ -28,11 +31,14 @@ public:
     virtual void insertIntoGrid(Grid *g, Matrix *m){}
     virtual BoundingBox* getTransformBoundingBox(Matrix* m);
 
+
+    Type getType(){return type;}
     BoundingBox* getBoundingBox() { return boundingBox;}
     
 
 protected:
     BoundingBox* boundingBox;
+    Type type;
 
 };
 

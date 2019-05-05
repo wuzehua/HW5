@@ -25,6 +25,7 @@ private:
     Vec3f direction;
     Vec3f up;
     Vec3f horizion;
+    Vec3f rawUp;
     float size;
     float angle_radius;
 };

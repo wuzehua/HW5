@@ -22,6 +22,7 @@ public:
         Vec3f min = center - temp;
         Vec3f max = center + temp;
         boundingBox = new BoundingBox(min,max);
+        type = SphereType;
     }
 
     ~Sphere()

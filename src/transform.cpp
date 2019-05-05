@@ -15,6 +15,7 @@ Transform::Transform(Matrix matrix, Object3D *object)
     this->object = object;
 
     boundingBox = object->getTransformBoundingBox(&matrix);
+    type = TransformType;
 
 }
 
