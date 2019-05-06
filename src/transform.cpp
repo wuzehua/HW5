@@ -65,5 +65,14 @@ void Transform::paint()
 
 void Transform::insertIntoGrid(Grid *g, Matrix *m)
 {
-    object->insertIntoGrid(g,&matrix);
+    Matrix temp;
+    if(m != nullptr)
+    {
+        temp = *m * matrix;
+    }
+    else
+    {
+        temp = matrix;
+    }
+    object->insertIntoGrid(g,&temp);
 }
