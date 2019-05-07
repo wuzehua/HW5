@@ -8,36 +8,99 @@ Group::Group(int numOfObjects)
 {
     this->numOfObjects = numOfObjects;
     objects = new Object3DPtr[numOfObjects];
-    boundingBox = NULL;
+    boundingBox = nullptr;
     type = GroupType;
 }
 
 Group::~Group()
 {
+    for(int i = 0;i < numOfObjects;i++)
+    {
+        if(objects[i] != nullptr)
+            delete objects[i];
+    }
+
     delete[] objects;
-    if(boundingBox != NULL)
+    if(boundingBox != nullptr)
         delete boundingBox;
 }
+
+
+void Group::reconstruct()
+{
+    vector<Object3D*> v;
+    for(int i = 0;i < numOfObjects;i++)
+    {
+        if(objects[i]->getType() == GroupType || objects[i]->getType() == TransformType)
+        {
+            objects[i]->addToVector(v, nullptr);
+        } else
+        {
+            v.push_back(objects[i]);
+            objects[i] = nullptr;
+        }
+    }
+
+    for(int i = 0;i < numOfObjects;i++)
+    {
+        if(objects[i] != nullptr)
+        {
+            delete objects[i];
+        }
+    }
+
+    delete[] objects;
+
+    numOfObjects = v.size();
+    objects = new Object3D* [numOfObjects];
+
+    BoundingBox* temp;
+
+    for(int i = 0;i < numOfObjects;i++)
+    {
+        objects[i] = v[i];
+        temp = objects[i]->getBoundingBox();
+        if(temp != nullptr) {
+            if (boundingBox == nullptr) {
+                boundingBox = new BoundingBox(temp->getMin(), temp->getMax());
+            } else {
+                boundingBox->Extend(temp);
+            }
+        }
+    }
+
+
+}
+
+
+void Group::addToVector(vector<Object3D *> &v, Matrix *m)
+{
+    for(int i = 0;i < numOfObjects;i++)
+    {
+        if(objects[i]->getType() == GroupType || objects[i]->getType() == TransformType)
+        {
+            objects[i]->addToVector(v, m);
+        } else
+        {
+            if(m == nullptr)
+            {
+                v.push_back(objects[i]);
+            }
+            else
+            {
+                auto temp = (Object3D*)new Transform(*m,objects[i]);
+                v.push_back(temp);
+            }
+            objects[i] = nullptr;
+        }
+    }
+}
+
 
 
 void Group::addObject(int index, Object3D *obj)
 {
     objects[index] = obj;
-
-    BoundingBox* temp;
-    temp = obj->getBoundingBox();
-
-    if(temp != NULL)
-    {
-        if(boundingBox == NULL)
-        {
-            boundingBox = new BoundingBox(temp->getMin(),temp->getMax());
-        } else
-        {
-            boundingBox->Extend(temp);
-        }
-    }
-
 }
 
 
@@ -61,28 +124,6 @@ bool Group::intersect(const Ray &r, Hit &h, float tmin)
 
 void Group::insertIntoGrid(Grid *g, Matrix *m)
 {
-    if(boundingBox == NULL)
-    {
-        if(numOfObjects == 0)
-        {
-            boundingBox = new BoundingBox(Vec3f(),Vec3f());
-        } else
-        {
-            BoundingBox* temp;
-            for(int i = 0;i < numOfObjects;i++)
-            {
-                temp = objects[i]->getBoundingBox();
-                if(i == 0)
-                {
-                    boundingBox = new BoundingBox(temp->getMin(),temp->getMax());
-                } else
-                {
-                    boundingBox->Extend(temp);
-                }
-            }
-        }
-
-    }
     for(int i = 0;i < numOfObjects;i++)
     {
         objects[i]->insertIntoGrid(g,m);
@@ -112,24 +153,3 @@ void Group::paint()
     }
 }
 
-/*
-BoundingBox* Group::getTransformBoundingBox(Matrix *m)
-{
-    BoundingBox* b = NULL;
-    BoundingBox* temp;
-    for(int i = 0;i < numOfObjects;i++)
-    {
-        temp = objects[i]->getTransformBoundingBox(m);
-        if(b == NULL)
-        {
-            b = temp;
-        } else
-        {
-            b->Extend(temp);
-            delete temp;
-        }
-    }
-
-    return b;
-}
- */

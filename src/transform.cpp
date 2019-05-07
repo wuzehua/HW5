@@ -19,6 +19,32 @@ Transform::Transform(Matrix matrix, Object3D *object)
 
 }
 
+
+void Transform::addToVector(vector<Object3D *> &v, Matrix *m)
+{
+    if(object->getType() == GroupType || object->getType() == TransformType)
+    {
+        if(m == nullptr)
+        {
+            object->addToVector(v,&matrix);
+        } else
+        {
+            auto mat = *m * matrix;
+            object->addToVector(v,&mat);
+        }
+    } else {
+        if (m == nullptr) {
+            auto temp = (Object3D *) new Transform(matrix, object);
+            v.push_back(temp);
+        } else {
+            auto mat = *m * matrix;
+            auto temp = (Object3D *) new Transform(mat, object);
+            v.push_back(temp);
+        }
+        object = nullptr;
+    }
+}
+
 bool Transform::intersect(const Ray &r, Hit &h, float tmin)
 {
     Vec3f direction  = r.getDirection();

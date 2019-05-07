@@ -130,9 +130,11 @@ void ImageRender::parseCommand(int argc, char **argv)
 
     image = new Image(width,height);
     parser = new SceneParser(inputFile);
-    grid = new Grid(parser->getGroup()->getBoundingBox(),nx,ny,nz);
-    grid->setNumOfColor(parser->getGroup()->getNumOfObj());
-    parser->getGroup()->insertIntoGrid(grid,NULL);
+    Group* group = parser->getGroup();
+    group->reconstruct();
+    grid = new Grid(group->getBoundingBox(),nx,ny,nz);
+    grid->setNumOfColor(group->getNumOfObj());
+    group->insertIntoGrid(grid, nullptr);
 
 
 }

@@ -19,9 +19,9 @@ public:
 
     ~Transform()
     {
-        if(object != NULL)
+        if(object != nullptr)
             delete object;
-        if(boundingBox != NULL)
+        if(boundingBox != nullptr)
             delete boundingBox;
     }
 
@@ -32,6 +32,8 @@ public:
     void insertIntoGrid(Grid* g,Matrix* m);
 
     void paint();
+
+    void addToVector(vector<Object3D *> &v, Matrix *m);
 
 
 private:

@@ -27,7 +27,7 @@ public:
 
     ~Sphere()
     {
-        delete material;
+        //delete material;
         delete boundingBox;
     }
 

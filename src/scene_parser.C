@@ -62,10 +62,14 @@ SceneParser::~SceneParser() {
     delete camera;
   int i;
   for (i = 0; i < num_materials; i++) {
-    delete materials[i]; }
+    if(materials[i] != nullptr)
+        delete materials[i];
+  }
   delete [] materials;
   for (i = 0; i < num_lights; i++) {
-    delete lights[i]; }
+    if(lights[i] != nullptr)
+        delete lights[i];
+  }
   delete [] lights;
 }
 

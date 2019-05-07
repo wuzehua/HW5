@@ -5,7 +5,7 @@
 #ifndef HW1_GROUP_H
 #define HW1_GROUP_H
 
-#include "object3d.h"
+#include "transform.h"
 
 typedef Object3D* Object3DPtr;
 typedef Object3DPtr* Object3DPtrArray;
@@ -31,6 +31,10 @@ public:
     //BoundingBox* getTransformBoundingBox (Matrix* m);
 
     void paint();
+
+    void reconstruct();
+
+    void addToVector(vector<Object3D*>& v,Matrix* m);
 
 
 

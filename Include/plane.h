@@ -12,7 +12,6 @@ class Plane:public Object3D
 public:
     Plane(Vec3f& normal, float offset,Material* material);
     Plane(Vec3f& a,Vec3f& b,Vec3f& c,Material* material);
-    ~Plane(){delete material;}
 
     bool intersect(const Ray &r, Hit &h, float tmin);
     bool intersectShadow(const Ray &r, Hit &h, float tmin);

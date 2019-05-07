@@ -5,7 +5,7 @@
 #ifndef UNTITLED_OBJECT3D_H
 #define UNTITLED_OBJECT3D_H
 
-
+#include <vector>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
@@ -30,6 +30,7 @@ public:
     virtual void paint(void) = 0;
     virtual void insertIntoGrid(Grid *g, Matrix *m){}
     virtual BoundingBox* getTransformBoundingBox(Matrix* m);
+    virtual void addToVector(vector<Object3D*>& v,Matrix* m){}
 
 
     Type getType(){return type;}
@@ -39,6 +40,8 @@ public:
 protected:
     BoundingBox* boundingBox;
     Type type;
+
+
 
 };
 
